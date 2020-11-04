@@ -17,5 +17,14 @@ d3.json('airports.json', d3.autoType).then(data => {
     const force = d3.forceSimulation(data.nodes)
         .force("charge", d3.forceManyBody())
         .force("link", d3.forceLink(data.links))
-        .force("center", d3.forceCenter().x(width/2).y(height/2));
+        .force("center", d3.forceCenter().x(width/2).y(height/2))
+
+    let nodes = data.nodes
+    let links = data.links
+
+    const circles = svg.selectAll('circle')
+        .data(data.nodes)
+        .enter()
+        .attr('r', d => circ(d.nodes))
+
 })
