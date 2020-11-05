@@ -29,10 +29,11 @@ d3.json('airports.json', d3.autoType).then(data => {
    
     const nodes = data.nodes
     const links = data.links
+    console.log(links)
 
     const circ = d3.scaleLinear()
         .domain(d3.extent(nodes, d => d.passengers))
-        .range([5,15])
+        .range([10,20])
         
     const lineScale = d3.scaleLinear()
         .range([0,width/20])
@@ -40,16 +41,30 @@ d3.json('airports.json', d3.autoType).then(data => {
     const simulation = d3.forceSimulation()
         .force('charge', d3.forceManyBody().strength(-20)) 
         .force('center', d3.forceCenter(width / 2, height / 2))
-     //   .force('horizontal', d3.forceX())
-     //   .force('vertical', d3.forceY())
+        .force('link', d3.forceLink()
+            .id(link => link.id)
+            .strength(link => link.strength))
 
-
-    const updateNodes = svg
+    const updateNodes = svg.append('g')
         .selectAll('circle')
         .data(nodes)
         .enter()
         .append('circle')
-        .attr('r', nodes => circ(nodes.passengers));
+        .attr('r', nodes => circ(nodes.passengers))
+
+    const linkElements = svg.append('g')
+        .selectAll('line')
+        .data(data)
+        .enter()
+        .append('line')
+        .attr('x1', data => data.nodes[data.links.source].x)
+        .attr('y1', data => data.nodes[data.links.source].y)
+        .attr('x2', data => data.nodes[data.links.target].x)
+        .attr('y2', data => data.nodes[data.links.target].y)
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+
+   // simulation.force('link').link(links)
      
   /*  updateNodes.enter()   
         .append('circle')
