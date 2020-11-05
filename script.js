@@ -23,7 +23,7 @@ d3.json('airports.json', d3.autoType).then(data => {
 
     const circ = d3.scaleLinear()
         .range([0,15])
-        .domain(data.nodes)
+        .domain(data.nodes.passengers)
 
     const lineScale = d3.scaleLinear()
         .range([0, width/500])
