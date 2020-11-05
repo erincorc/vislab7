@@ -1,6 +1,6 @@
-const margin = ({top: 20, right: 35, bottom: 20, left: 40})
-const width = 900 - margin.left - margin.right
-const height = 200 - margin.top - margin.bottom
+//const margin = ({top: 20, right: 35, bottom: 20, left: 40})
+const width = 500
+const height = 500
 
 let makePositiveX = function(nodes, i) {
     if (nodes[i].x < 0) { return -1*nodes[i].x}
@@ -15,47 +15,59 @@ let makePositiveY = function(nodes, i) {
 d3.json('airports.json', d3.autoType).then(data => {
     console.log(data)
 
-    const svg = d3.selectAll('.container').append('svg')
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+    const svg = d3.selectAll('.chart').append('svg')
+        .attr("width", width)
+        .attr("height", height )
+        .attr("viewBox", [0,0,width,height]) 
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("transform", `translate(${width/16}, ${width/16})`)
+
+    let pass = [] // list of passengers
+    for (let i = 0; i < data.nodes.length; i++) {
+        pass.push(data.nodes[i].passengers)
+    }    
+   
+    const nodes = data.nodes
+    const links = data.links
 
     const circ = d3.scaleLinear()
-        .range([0,15])
-        .domain(data.nodes.passengers)
-
+        .domain(d3.extent(nodes, d => d.passengers))
+        .range([5,15])
+        
     const lineScale = d3.scaleLinear()
-        .range([0, width/500])
+        .range([0,width/20])
 
-    const force = d3.forceSimulation(data.nodes)
-        .force("charge", d3.forceManyBody())
-        .force("link", d3.forceLink(data.links))
-        .force("center", d3.forceCenter().x(width/2).y(height/2))
+    const simulation = d3.forceSimulation()
+        .force('charge', d3.forceManyBody().strength(-20)) 
+        .force('center', d3.forceCenter(width / 2, height / 2))
+     //   .force('horizontal', d3.forceX())
+     //   .force('vertical', d3.forceY())
 
-    let nodes = data.nodes
-    let links = data.links
+
+    const updateNodes = svg
+        .selectAll('circle')
+        .data(nodes)
+        .enter()
+        .append('circle')
+        .attr('r', nodes => circ(nodes.passengers));
+     
+  /*  updateNodes.enter()   
+        .append('circle')
+        .merge(updateNodes)
+        .attr('r', nodes => circ(nodes.passengers))
+        .attr('cx', nodes => nodes.x)
+        .attr('cy', nodes => nodes.y)
+        .attr('fill', 'blue') */
+
+    simulation.nodes(nodes).on('tick', () => {
+        updateNodes
+            .attr("cx", node => node.x)
+            .attr("cy", node => node.y)
+        })
+
     console.log(links)
-    console.log(links[0].source)
-    console.log(links[0].source.x)
 
-    console.log(nodes)
-    for (let i = 0; i < nodes.length; i ++) {
-            console.log(makePositiveX(nodes,i))
-            console.log(makePositiveY(nodes,i))
-        }
-
-    const circles = svg.selectAll('circle')
-        .data(data.nodes)
-        .join('circle')
-        .attr('r', d => circ(d.nodes))
-        .attr('cx', (d,i) => makePositiveX(nodes,i)+50)
-        .attr('cy', (d,i) => makePositiveY(nodes,i)+100)
-        .style('fill', 'blue')
-
-    console.log(links)
-
-    const lines = svg.selectAll('line')
+ /*   const lines = svg.selectAll('line')
         .data(data.links)
         .join('line')
         .attr('x1', (d, i) => links[i].source.x)
@@ -63,7 +75,7 @@ d3.json('airports.json', d3.autoType).then(data => {
         .attr('x2', (d,i) => links[i].target.x)
         .attr('y2', (d,i) => links[i].target.y)
         .attr('pathLength', 30)
-        .attr('stroke', 'black')
+        .attr('stroke', 'black') */
         
 
 
