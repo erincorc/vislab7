@@ -64,15 +64,6 @@ d3.json('airports.json', d3.autoType).then(data => {
         .attr('stroke', 'black')
         .attr('stroke-width', 1)
 
-   // simulation.force('link').link(links)
-     
-  /*  updateNodes.enter()   
-        .append('circle')
-        .merge(updateNodes)
-        .attr('r', nodes => circ(nodes.passengers))
-        .attr('cx', nodes => nodes.x)
-        .attr('cy', nodes => nodes.y)
-        .attr('fill', 'blue') */
 
     simulation.nodes(nodes).on('tick', () => {
         updateNodes
@@ -81,6 +72,27 @@ d3.json('airports.json', d3.autoType).then(data => {
         })
 
     console.log(links)
+    console.log(nodes.map(n => n.x))
+
+    // TOOLTIP
+
+    let tool = d3.selectAll('circle')
+        .on("mouseenter", (event, nodes) => {
+            let n = nodes;
+            const pos = d3.pointer(event, window)
+            d3.select('.tooltip')
+                .style('display', 'inline-block')
+                .style('position', 'fixed')
+                .style('left', pos[0]+5+'px')
+                .style('top', pos[1]+5+'px')
+                .html(n.name)
+        })
+        .on("mouseleave", (event, nodes) => {
+            d3.select('.tooltip')
+                .style('display', 'none')
+        })
+
+    
 
  /*   const lines = svg.selectAll('line')
         .data(data.links)
