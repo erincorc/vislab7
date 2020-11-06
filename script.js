@@ -13,6 +13,8 @@ let makePositiveY = function(nodes, i) {
 };
 
 d3.json('airports.json', d3.autoType).then(data => {
+
+
     console.log(data)
 
     const svg = d3.selectAll('.chart').append('svg')
@@ -54,25 +56,31 @@ d3.json('airports.json', d3.autoType).then(data => {
 
     const linkElements = svg.append('g')
         .selectAll('line')
-        .data(data)
+        .data(nodes)
         .enter()
         .append('line')
-        .attr('x1', data => data.nodes[data.links.source].x)
+    /*    .attr('x1', data => data.nodes[data.links.source].x)
         .attr('y1', data => data.nodes[data.links.source].y)
         .attr('x2', data => data.nodes[data.links.target].x)
-        .attr('y2', data => data.nodes[data.links.target].y)
+        .attr('y2', data => data.nodes[data.links.target].y) */
         .attr('stroke', 'black')
         .attr('stroke-width', 1)
 
 
-    simulation.nodes(nodes).on('tick', () => {
+   /* simulation.nodes(nodes).on('tick', function() {
         updateNodes
             .attr("cx", node => node.x)
             .attr("cy", node => node.y)
+        linkElements
+            .attr('x1', links => links.source.x)
+            .attr('y1', links => links.source.y)
+            .attr('x2', links => links.target.x)
+            .attr('y2', links => links.target.y)
         })
+        simulation.force('link').link(links) */
 
     console.log(links)
-    console.log(nodes.map(n => n.x))
+    console.log(links)
 
     // TOOLTIP
 
@@ -83,7 +91,7 @@ d3.json('airports.json', d3.autoType).then(data => {
             d3.select('.tooltip')
                 .style('display', 'inline-block')
                 .style('position', 'fixed')
-                .style('left', pos[0]+5+'px')
+                .style('left', pos[0]+10+'px')
                 .style('top', pos[1]+5+'px')
                 .html(n.name)
         })
