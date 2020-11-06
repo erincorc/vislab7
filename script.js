@@ -14,7 +14,6 @@ let makePositiveY = function(nodes, i) {
 
 d3.json('airports.json', d3.autoType).then(data => {
 
-
     console.log(data)
 
     const svg = d3.selectAll('.chart').append('svg')
@@ -22,7 +21,7 @@ d3.json('airports.json', d3.autoType).then(data => {
         .attr("height", height )
         .attr("viewBox", [0,0,width,height]) 
         .append("g")
-        .attr("transform", `translate(${width/16}, ${width/16})`)
+        .attr('transform', `translate(${width/16}, ${height/16})`)
 
     let pass = [] // list of passengers
     for (let i = 0; i < data.nodes.length; i++) {
@@ -40,50 +39,33 @@ d3.json('airports.json', d3.autoType).then(data => {
     const lineScale = d3.scaleLinear()
         .range([0,width/20])
 
-    const simulation = d3.forceSimulation()
+    const simulation = d3.forceSimulation(nodes)
         .force('charge', d3.forceManyBody().strength(-20)) 
         .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('link', d3.forceLink()
-            .id(link => link.id)
-            .strength(link => link.strength))
+        .force('link', d3.forceLink(links).distance(70))
 
-    const updateNodes = svg.append('g')
+    const updateNodes = svg //.append('g')
         .selectAll('circle')
         .data(nodes)
         .enter()
         .append('circle')
-        .attr('r', nodes => circ(nodes.passengers))
+        .attr('r', n => circ(n.passengers))
+    //    .attr('cx', n => n.x)
+    //    .attr('cy', n => n.y)
 
-    const linkElements = svg.append('g')
-        .selectAll('line')
-        .data(nodes)
+    const linkElements = svg.selectAll('line')
+        .data(links)
         .enter()
         .append('line')
+        .attr('stroke-width', 1)
+        .attr('stroke', 'black')
     /*    .attr('x1', data => data.nodes[data.links.source].x)
         .attr('y1', data => data.nodes[data.links.source].y)
         .attr('x2', data => data.nodes[data.links.target].x)
         .attr('y2', data => data.nodes[data.links.target].y) */
-        .attr('stroke', 'black')
         .attr('stroke-width', 1)
 
-
-   /* simulation.nodes(nodes).on('tick', function() {
-        updateNodes
-            .attr("cx", node => node.x)
-            .attr("cy", node => node.y)
-        linkElements
-            .attr('x1', links => links.source.x)
-            .attr('y1', links => links.source.y)
-            .attr('x2', links => links.target.x)
-            .attr('y2', links => links.target.y)
-        })
-        simulation.force('link').link(links) */
-
-    console.log(links)
-    console.log(links)
-
     // TOOLTIP
-
     let tool = d3.selectAll('circle')
         .on("mouseenter", (event, nodes) => {
             let n = nodes;
@@ -100,18 +82,16 @@ d3.json('airports.json', d3.autoType).then(data => {
                 .style('display', 'none')
         })
 
-    
-
- /*   const lines = svg.selectAll('line')
-        .data(data.links)
-        .join('line')
-        .attr('x1', (d, i) => links[i].source.x)
-        .attr('y1', (d, i) => links[i].source.y)
-        .attr('x2', (d,i) => links[i].target.x)
-        .attr('y2', (d,i) => links[i].target.y)
-        .attr('pathLength', 30)
-        .attr('stroke', 'black') */
-        
-
-
+    console.log('links', links)
+    console.log('nodes', nodes)
+    simulation.on("tick", function(){
+        updateNodes
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+        linkElements
+            .attr('x1', function(links) {return links.source.x})
+            .attr('y1', function(links) {return links.source.y})
+            .attr('x2', function(links) {return links.target.x})
+            .attr('y2', function(links) {return links.target.y})
+        }) 
 })
