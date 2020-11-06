@@ -1,5 +1,5 @@
 //const margin = ({top: 20, right: 35, bottom: 20, left: 40})
-const width = 500
+const width = 1000
 const height = 500
 
 let makePositiveX = function(nodes, i) {
@@ -22,11 +22,6 @@ d3.json('airports.json', d3.autoType).then(data => {
         .attr("viewBox", [0,0,width,height]) 
         .append("g")
         .attr('transform', `translate(${width/16}, ${height/16})`)
-
-    let pass = [] // list of passengers
-    for (let i = 0; i < data.nodes.length; i++) {
-        pass.push(data.nodes[i].passengers)
-    }    
    
     const nodes = data.nodes
     const links = data.links
@@ -36,22 +31,15 @@ d3.json('airports.json', d3.autoType).then(data => {
         .domain(d3.extent(nodes, d => d.passengers))
         .range([10,20])
         
-    const lineScale = d3.scaleLinear()
-        .range([0,width/20])
+    const colors = d3.scaleOrdinal()
+        .domain(nodes)
+        .range(d3.schemeAccent)
+
 
     const simulation = d3.forceSimulation(nodes)
-        .force('charge', d3.forceManyBody().strength(-20)) 
+        .force('charge', d3.forceManyBody().strength(-25)) 
         .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('link', d3.forceLink(links).distance(70))
-
-    const updateNodes = svg //.append('g')
-        .selectAll('circle')
-        .data(nodes)
-        .enter()
-        .append('circle')
-        .attr('r', n => circ(n.passengers))
-    //    .attr('cx', n => n.x)
-    //    .attr('cy', n => n.y)
+        .force('link', d3.forceLink(links).distance(50))
 
     const linkElements = svg.selectAll('line')
         .data(links)
@@ -59,11 +47,17 @@ d3.json('airports.json', d3.autoType).then(data => {
         .append('line')
         .attr('stroke-width', 1)
         .attr('stroke', 'black')
-    /*    .attr('x1', data => data.nodes[data.links.source].x)
-        .attr('y1', data => data.nodes[data.links.source].y)
-        .attr('x2', data => data.nodes[data.links.target].x)
-        .attr('y2', data => data.nodes[data.links.target].y) */
-        .attr('stroke-width', 1)
+
+    const updateNodes = svg
+        .selectAll('circle')
+        .data(nodes)
+        .enter()
+        .append('circle')
+        .attr('r', n => circ(n.passengers))
+        .attr('fill', n => colors(n.name))
+
+
+
 
     // TOOLTIP
     let tool = d3.selectAll('circle')
