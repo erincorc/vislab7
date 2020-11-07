@@ -51,12 +51,14 @@ d3.json('airports.json', d3.autoType).then(airports=>{
                         .attr("y2", d => d.target.y)
                   // set the map opacity to 1
                   map.transition(500).style("opacity", 1)
+                  mapOutline.transition(500).style('opacity')
 
               } else { // force layout
                   // restart the simulation
-                  simulation.restart()
+                  simulation.alphaTarget(0.1).restart()
                   // set the map opacity to 0
                   map.style('opacity', 0)
+                  worldPath.style('opacity', 0)
               }
           }
 
@@ -80,7 +82,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             .style("opacity", 0)
             .attr("fill", "LightSlateGray")
        
-        svg.append("path")
+        const mapOutline = svg.append("path")
             .datum(topojson.mesh(worldmap, worldmap.objects.countries))
             .attr("d", worldPath)
             .attr('fill', 'none')
