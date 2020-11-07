@@ -120,6 +120,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             .attr('fill', n => colors(n.name))
             .call(drag(simulation))
     
+            
         // TOOLTIP
         let tool = d3.selectAll('circle')
             .on("mouseenter", (event, nodes) => {
