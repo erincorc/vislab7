@@ -78,7 +78,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             .datum(worldmapgeo)
             .attr("d", worldPath)
             .style("opacity", 0)
-            .attr("fill", "DarkSlateGray")
+            .attr("fill", "LightSlateGray")
        
         svg.append("path")
             .datum(topojson.mesh(worldmap, worldmap.objects.countries))
@@ -96,7 +96,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             
         const colors = d3.scaleOrdinal()
             .domain(nodes)
-            .range(d3.schemeAccent)
+            .range(d3.schemeAccent) 
     
         const simulation = d3.forceSimulation(nodes)
             .force('charge', d3.forceManyBody().strength(-20)) 
@@ -117,7 +117,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             .enter()
             .append('circle')
             .attr('r', n => circ(n.passengers))
-            .attr('fill', "pink")
+            .attr('fill', n => colors(n.name))
             .call(drag(simulation))
     
         // TOOLTIP
