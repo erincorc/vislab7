@@ -1,6 +1,6 @@
 //const margin = ({top: 20, right: 35, bottom: 20, left: 40})
-const width = 800
-const height = 800
+const width = 600
+const height = 600
 
 let visType = "force"
 
