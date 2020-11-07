@@ -1,5 +1,5 @@
 //const margin = ({top: 20, right: 35, bottom: 20, left: 40})
-const width = 1200
+const width = 800
 const height = 800
 
 let visType = "force"
@@ -120,7 +120,7 @@ d3.json('airports.json', d3.autoType).then(airports=>{
             .attr('fill', n => colors(n.name))
             .call(drag(simulation))
     
-            
+
         // TOOLTIP
         let tool = d3.selectAll('circle')
             .on("mouseenter", (event, nodes) => {
