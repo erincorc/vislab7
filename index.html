@@ -4,6 +4,7 @@
         <script defer src="https://d3js.org/d3.v6.min.js" charset="utf-8"></script>
         <script src="script.js" defer type="module"></script>
         <link rel="stylesheet" href="styles.css">
+        <script src="https://unpkg.com/topojson@3"></script>
         <!-- Milligram CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
 
@@ -12,6 +13,11 @@
     <body>
         <h1> Visualization Lab 7 </h1>
         <h2> Erin Corcoran</h2>
+
+        
+        <label for="force"> <input type="radio" id="force" name="choice" value="force"> Force </label><br>
+        <label for="map"> <input type="radio" id="map" name="choice" value="map"> Map</label><br>
+
         <div class="chart"></div>
         <div class="tooltip"></div>
     </body>
